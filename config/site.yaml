@@ -1,0 +1,56 @@
+# Site settings read at build time (spec 2.3 CFG-01). Everything here is public: no tokens, no Sheet IDs.
+data:
+  # Raw URL of the data repository and branch; files are read from <base_url>/<path>
+  base_url: https://raw.githubusercontent.com/terramarefjordgaard/reel4science-data/main
+  status_path: data/status.json
+  latest_path: data/latest.json
+polling:
+  browser_interval_seconds: 60
+  request_timeout_seconds: 15
+  retry_max_seconds: 300
+status:
+  delayed_after_minutes: 75
+toast:
+  seconds: 8
+display_timezone: Europe/Oslo
+
+# Editorial texts, compiled at build time (paths under site/). content: opening and sub-blocks of sections;
+# sections: page order and menu (UX-01 rev, DEC-29)
+content:
+  intro: content/intro.md
+  map: content/map.md
+  species: content/species.md
+sections:
+  - { id: observations, menu: Observations, file: content/observations.md }
+  - { id: leaderboard, menu: Leaderboard, file: content/leaderboard.md }
+  - { id: about, menu: About, file: content/about.md }
+  - { id: contacts, menu: Contacts, file: content/contacts.md }
+# Contacts section, links in the order shown: name and address (https:// or mailto:); web links open in a new
+# tab. Add a line per link, for example:
+#   - { label: Project website, url: 'https://…' }
+#   - { label: LinkedIn, url: 'https://www.linkedin.com/company/…' }
+#   - { label: GitHub, url: 'https://github.com/…' }
+contacts:
+  - { label: Terramare, url: 'https://terramarefjordgaard.odoo.com/' }
+  - { label: Instagram, url: 'https://www.instagram.com/terramare_fjordgaard/' }
+  - { label: LinkedIn, url: 'https://www.linkedin.com/company/terramare-fjord-g%C3%A5rd-as/' }
+
+# Link behind the Terramare logo at the bottom of the page (https://), opened in a new tab
+footer:
+  logo_link: https://terramarefjordgaard.odoo.com/
+
+# Map of section 1 (MAP-01..03). Basemap: Kartverket open grey-tone topographic map (CC BY 4.0, no key)
+map:
+  tiles: https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png
+  attribution: '© Kartverket'
+  max_zoom: 17
+  center: [67.55, 15.55]
+  zoom: 9
+  min_zoom: 3
+  # World background under Kartverket (whose tiles are transparent outside Norway), shown in grey
+  background:
+    tiles: https://tile.openstreetmap.org/{z}/{x}/{y}.png
+    attribution: '© OpenStreetMap contributors'
+# Species colours, in alphabetical species order (operational UI setting)
+palette:
+  species: ['#2f6f62', '#c9a86a', '#497d9a', '#bd592f', '#9672a2', '#8fb3a7', '#b19045', '#6c8980', '#514d40']

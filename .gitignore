@@ -1,0 +1,26 @@
+# Only the website and what builds it is published.
+# Everything at the top of the folder is ignored except the paths listed below: a new file there (notes, data,
+# tokens, exports) stays private unless it is added here on purpose.
+/*
+!/.gitignore
+!/.github/
+!/README.md
+!/package.json
+!/package-lock.json
+!/vite.config.mjs
+!/scripts/
+!/shared/
+!/site/
+
+!/config/
+/config/*
+!/config/site.yaml
+
+# Never published, wherever they are
+.DS_Store
+.env*
+*.local.*
+*.pem
+*.key
+wiki*
+notes*

@@ -1,0 +1,52 @@
+# Site on GitHub Pages. On every push to main (code, texts, settings): build and publication.
+# The tests run on the development computer before the push; they are not in this repository.
+# The fishing data live in the separate data repository: their commits never run this workflow,
+# the pages already open read them by themselves.
+name: Site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# one publication at a time; a newer push waits for the running one
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Data repository address is set in config/site.yaml
+        run: "! grep -q 'OWNER/REPOSITORY' config/site.yaml"
+      - name: Build
+        run: npm run build:site
+      - name: No private data in the repository or in the built site
+        run: npm run check:public
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

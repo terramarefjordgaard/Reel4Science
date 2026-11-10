@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Reel4Science · ACCESS-Fjord Hub</title>
+	<link rel="icon" type="image/png" href="./images/favicon.png">
+	<link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+	<a class="skip" href="#main">Skip to content</a>
+	<header class="top">
+		<div class="container top-inner">
+			<a class="brand" href="#intro" id="brand"><img src="./images/reel4science-icon.png" alt="" width="42" height="32"><span class="brand-text"><span class="brand-name">ACCESS-Fjord</span><span class="brand-sub">Reel4Science · Terramare</span></span></a>
+			<nav class="nav" aria-label="Sections"><!--nav--></nav>
+		</div>
+	</header>
+	<main id="main">
+		<section id="intro" class="hero" aria-labelledby="intro-title">
+			<div class="container">
+				<img class="intro-logo" src="./images/reel4science-white.png" alt="Reel4Science" width="554" height="155">
+				<div class="hero-grid"><!--content:intro--></div>
+			</div>
+		</section>
+
+		<div class="container">
+			<section id="trips" class="trips" aria-labelledby="trips-title" hidden>
+				<span class="dot" aria-hidden="true"></span>
+				<div>
+					<h2 id="trips-title" class="trips-title"><span id="trips-heading">Fishing trips in progress</span></h2>
+					<ul id="trips-list"></ul>
+					<p id="trips-stale" class="trips-stale" hidden></p>
+				</div>
+			</section>
+		</div>
+
+		<section id="figures" class="figures container" aria-labelledby="figures-title">
+			<div class="figures-head">
+				<h2 id="figures-title" class="eyebrow">The project in numbers</h2>
+				<div class="status" aria-label="Data status">
+					<p><span class="state-dot" aria-hidden="true"></span><span id="data-state" class="state" data-state="loading">Loading data…</span> <span id="last-update"></span></p>
+					<details>
+						<summary>Update details</summary>
+						<dl>
+							<dt>Source checked</dt><dd id="source-checked">-</dd>
+							<dt>Data published</dt><dd id="data-published">-</dd>
+							<dt>Imported in this page</dt><dd id="imported">-</dd>
+							<dt>Data period</dt><dd id="period">-</dd>
+						</dl>
+					</details>
+				</div>
+			</div>
+			<p id="overview-empty" class="scope">Data are loading.</p>
+			<dl id="overview" class="overview" hidden>
+				<div class="fig-item">
+					<dt>Fish caught <button type="button" class="info" aria-expanded="false" aria-controls="info-fish" aria-label="How is “Fish caught” calculated?">i</button></dt>
+					<dd data-key="fish" ></dd>
+					<p class="info-text" id="info-fish" hidden>Every fish recorded, all trips.</p>
+				</div>
+				<div class="fig-item">
+					<dt>Fishing hours <button type="button" class="info" aria-expanded="false" aria-controls="info-fishing_hours" aria-label="How is “Fishing hours” calculated?">i</button></dt>
+					<dd data-key="fishing_hours" ></dd>
+					<p class="info-text" id="info-fishing_hours" hidden>Total duration of the completed fishing trips.</p>
+				</div>
+				<div class="fig-item">
+					<dt>Fishing events <button type="button" class="info" aria-expanded="false" aria-controls="info-fishing_events" aria-label="How is “Fishing events” calculated?">i</button></dt>
+					<dd data-key="fishing_events" ></dd>
+					<p class="info-text" id="info-fishing_events" hidden>One event for each fisher who fished on a trip, with or without catches.</p>
+				</div>
+				<div class="fig-item">
+					<dt>Fishing days <button type="button" class="info" aria-expanded="false" aria-controls="info-fishing_days" aria-label="How is “Fishing days” calculated?">i</button></dt>
+					<dd data-key="fishing_days" ></dd>
+					<p class="info-text" id="info-fishing_days" hidden>Distinct days with at least one fishing trip.</p>
+				</div>
+				<div class="fig-item">
+					<dt>Monitoring stations <button type="button" class="info" aria-expanded="false" aria-controls="info-stations" aria-label="How is “Monitoring stations” calculated?">i</button></dt>
+					<dd data-key="stations" data-pct="stations_pct"></dd>
+					<p class="info-text" id="info-stations" hidden>Stations with at least one fishing trip; in brackets, their share of all monitoring stations.</p>
+				</div>
+				<div class="fig-item">
+					<dt>Release rate <button type="button" class="info" aria-expanded="false" aria-controls="info-released_pct" aria-label="How is “Release rate” calculated?">i</button></dt>
+					<dd data-key="released_pct" data-unit="%"></dd>
+					<p class="info-text" id="info-released_pct" hidden>Share of fish recorded as released. A release does not prove survival.</p>
+				</div>
+				<div class="fig-item">
+					<dt>Hours per fisher <button type="button" class="info" aria-expanded="false" aria-controls="info-hours_per_fisher" aria-label="How is “Hours per fisher” calculated?">i</button></dt>
+					<dd data-key="hours_per_fisher" ></dd>
+					<p class="info-text" id="info-hours_per_fisher" hidden>Trip hours × fishers on board, divided by the number of fishers.</p>
+				</div>
+				<div class="fig-item">
+					<dt>Fish per hour <button type="button" class="info" aria-expanded="false" aria-controls="info-fish_per_hour" aria-label="How is “Fish per hour” calculated?">i</button></dt>
+					<dd data-key="fish_per_hour" data-digits="2"></dd>
+					<p class="info-text" id="info-fish_per_hour" hidden>Fish caught per fishing hour (trip hours × fishers on board), completed trips.</p>
+				</div>
+				<div class="fig-item">
+					<dt>Species <button type="button" class="info" aria-expanded="false" aria-controls="info-species" aria-label="How is “Species” calculated?">i</button></dt>
+					<dd data-key="species" ></dd>
+					<p class="info-text" id="info-species" hidden>Distinct species caught.</p>
+				</div>
+				<div class="fig-item">
+					<dt>Biodiversity <button type="button" class="info" aria-expanded="false" aria-controls="info-diversity" aria-label="How is “Biodiversity” calculated?">i</button></dt>
+					<dd data-key="diversity" data-digits="2"></dd>
+					<p class="info-text" id="info-diversity" hidden>Simpson index 1 − D: the chance that two fish caught at random belong to different species (0 = one species only).</p>
+				</div>
+			</dl>
+		</section>
+
+		<div class="period-bar" id="period-bar">
+			<div class="container period-inner" role="group" aria-labelledby="period-label">
+				<span id="period-label" class="field-label">Period</span>
+				<label for="period-from" class="visually-hidden">From</label><input type="date" id="period-from" aria-label="From">
+				<span aria-hidden="true">–</span>
+				<label for="period-to" class="visually-hidden">To</label><input type="date" id="period-to" aria-label="To">
+				<button type="button" class="link-button" id="period-reset">Reset period</button>
+				<p class="scope" id="period-scope" aria-live="polite">All available dates</p>
+			</div>
+		</div>
+
+		<section id="observations" class="section" aria-labelledby="observations-title">
+			<div class="container">
+				<div class="section-copy section-lead"><!--content:observations--></div>
+				<div class="subsection" id="map-block" aria-labelledby="map-title">
+					<div class="section-copy"><!--content:map--></div>
+				<div class="map-layout" id="map-section">
+					<div class="map-card">
+						<div class="map-tools">
+							<label for="map-species" class="field-label">Species</label>
+							<select id="map-species" disabled><option value="">Waiting for data</option></select>
+							<label for="map-size" class="field-label">Marker size</label>
+							<select id="map-size">
+								<option value="catches">Fish recorded</option>
+								<option value="events">Fishing trips</option>
+								<option value="species">Species</option>
+							</select>
+							<button type="button" class="link-button" id="map-reset">Reset view</button>
+						</div>
+						<div id="map" class="map" role="region" aria-label="Map of sampled stations. The station list below gives the same stations as a table."></div>
+						<p id="map-notice" class="map-notice" role="status" hidden></p>
+						<ul class="legend" aria-label="Map legend">
+							<li><span class="station-marker legend-marker" aria-hidden="true"><span></span></span>Sampled station</li>
+							<li><span class="station-marker is-open legend-marker" aria-hidden="true"><span></span></span>Trip in progress</li>
+							<li id="legend-size">Marker size: fish recorded</li>
+							<li id="map-count" class="map-count"></li>
+						</ul>
+					</div>
+					<aside id="station-detail" class="station-detail" aria-live="polite" aria-label="Selected station"><p class="detail-hint">Select a station on the map or in the station list.</p></aside>
+				</div>
+				<details class="station-list">
+					<summary>Station list (<span id="station-count">0</span>)</summary>
+					<div class="table-wrap">
+						<table>
+							<thead><tr><th scope="col">Station</th><th scope="col">Area</th><th scope="col" class="num">Fish</th><th scope="col" class="num">Species</th><th scope="col" class="num">Fishing events</th><th scope="col" class="num">Fishing hours</th><th scope="col">Status</th></tr></thead>
+							<tbody id="station-rows"></tbody>
+						</table>
+					</div>
+				</details>
+				</div>
+				<div class="subsection" id="species-block" aria-labelledby="species-title">
+				<div class="section-heading">
+					<div class="section-copy"><!--content:species--></div>
+					<div class="section-control">
+						<label for="obs-species" class="field-label">Species</label>
+						<select id="obs-species" disabled><option value="">Waiting for data</option></select>
+					</div>
+				</div>
+				<div class="obs-grid">
+					<div class="chart-card">
+						<div class="chart-head">
+							<h3 id="catch-title">Catch over time</h3>
+							<button type="button" class="link-button" id="catch-reset">Reset chart filters</button>
+						</div>
+						<div class="local-filters" role="group" aria-label="Filters of this chart">
+							<div class="field"><label for="catch-fisher" class="field-label">Fisher</label><select id="catch-fisher"><option value="">All fishers</option></select></div>
+							<div class="field"><label for="catch-gear" class="field-label">Gear</label><select id="catch-gear"><option value="">All gears</option></select></div>
+							<div class="field"><label for="catch-station" class="field-label">Station</label><select id="catch-station"><option value="">All stations</option></select></div>
+						</div>
+						<p class="scope" id="catch-note"></p>
+						<div id="catch-chart" class="catch-plot" role="img" aria-label="Fish per sampled day. Values are listed in the data table."></div>
+						<p class="scope" id="catch-empty" hidden></p>
+						<div id="catch-day" class="day-detail" aria-live="polite" hidden></div>
+						<details class="data-table">
+							<summary>View data table</summary>
+							<div class="table-wrap"><table id="catch-table"><caption class="visually-hidden">Fish per sampled day</caption>
+								<thead><tr><th scope="col">Date</th><th scope="col" class="num">Fish</th><th scope="col">Fishers</th><th scope="col">Stations</th><th scope="col">Status</th></tr></thead><tbody></tbody></table></div>
+						</details>
+					</div>
+					<div class="chart-card">
+						<div class="chart-head">
+							<h3 id="lw-title">Length and weight</h3>
+							<button type="button" class="link-button" id="lw-png">Save PNG</button>
+						</div>
+						<div class="local-filters">
+							<div class="field"><span class="field-label" id="lw-highlight-caption">Highlight</span>
+							<details class="dropdown" id="lw-dropdown">
+								<summary id="lw-highlight-label" aria-describedby="lw-highlight-caption">Fishers</summary>
+								<div class="dropdown-panel" id="lw-fishers" role="group" aria-label="Fishers to highlight"></div>
+							</details></div>
+							<div class="field"><span class="field-label">Axes</span><label class="check"><input type="checkbox" id="lw-log"> Logarithmic</label></div>
+						</div>
+						<p class="scope" id="lw-sub"></p>
+						<div id="lw-chart" class="lw-chart" role="img" aria-label="Length-weight chart. The fitted relationship is described below the chart."></div>
+						<ul class="legend" id="lw-legend" aria-label="Chart legend"></ul>
+						<div class="lw-fit" id="lw-fit" aria-live="polite"></div>
+					</div>
+				</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="leaderboard" class="section section-wash" aria-labelledby="leaderboard-title">
+			<div class="container">
+				<div class="section-copy section-lead"><!--content:leaderboard--></div>
+				<div class="board">
+					<div class="prizes" id="prizes">
+						<article class="prize" id="prize-biodiversity" aria-labelledby="prize-biodiversity-title">
+							<span class="prize-icon" aria-hidden="true">🏅</span>
+							<div><h3 id="prize-biodiversity-title">Biodiversity Prize</h3><p class="prize-winner" data-role="winner">-</p><p class="prize-value" data-role="value"></p><div class="prize-text" data-role="text"></div></div>
+						</article>
+						<article class="prize prize-warm" id="prize-conservation" aria-labelledby="prize-conservation-title">
+							<span class="prize-icon" aria-hidden="true">🏅</span>
+							<div><h3 id="prize-conservation-title">Conservation Prize</h3><p class="prize-winner" data-role="winner">-</p><p class="prize-value" data-role="value"></p><div class="prize-text" data-role="text"></div></div>
+						</article>
+					</div>
+					<div class="board-head">
+						<div role="tablist" aria-label="Community tables" id="board-tabs">
+							<button type="button" role="tab" id="tab-leaderboard" data-view="leaderboard" aria-controls="board-panel">Leaderboard</button>
+							<button type="button" role="tab" id="tab-longest" data-view="longest" aria-controls="board-panel">Longest fish</button>
+							<button type="button" role="tab" id="tab-heaviest" data-view="heaviest" aria-controls="board-panel">Heaviest fish</button>
+						</div>
+						<div class="board-tools">
+							<span id="board-sort-wrap"><label for="board-sort" class="field-label">Rank by</label>
+							<select id="board-sort"><option value="biodiversity">Biodiversity prize</option><option value="conservation">Conservation prize</option></select></span>
+							<button type="button" class="link-button" id="board-csv">Download CSV</button>
+						</div>
+					</div>
+					<div role="tabpanel" id="board-panel" tabindex="0">
+						<div class="table-wrap"><table id="board-table"><caption class="visually-hidden" id="board-caption"></caption><thead></thead><tbody></tbody></table></div>
+						<p class="scope" id="board-empty" hidden></p>
+						<div class="board-foot">
+							<p class="scope" id="board-note"></p>
+							<button type="button" class="button-secondary" id="board-more" hidden></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="about" class="section" aria-labelledby="about-title">
+			<div class="container">
+				<div class="section-copy"><!--content:about--></div>
+			</div>
+		</section>
+
+		<section id="contacts" class="section" aria-labelledby="contacts-title">
+			<div class="container">
+				<div class="section-copy"><!--content:contacts--></div>
+				<ul class="contacts"><!--contacts--></ul>
+			</div>
+		</section>
+	</main>
+	<footer class="footer">
+		<div class="container">
+			<div><p class="brand-name">ACCESS-Fjord</p><p>Reel4Science · Terramare</p></div>
+			<a href="{{footer_logo_link}}" target="_blank" rel="noopener noreferrer"><img src="./images/terramare-horizontal.png" alt="Terramare Fjord & Gård" width="180" height="58"></a>
+		</div>
+	</footer>
+	<div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+	<script type="module" src="./src/main.mjs"></script>
+</body>
+</html>
