@@ -6,11 +6,12 @@ export function medal(rank) {
 	return rank >= 1 && rank <= 3 ? { icon: medals[rank - 1], text: ordinals[rank - 1] } : null;
 }
 
-const fish_columns = (measure) => [
+// unit: shown after the value on the phone cards, where the column names are not shown
+const fish_columns = (measure, unit) => [
 	{ key: 'rank', label: 'Rank' },
 	{ key: 'fisher', label: 'Fisher' },
 	{ key: 'species', label: 'Species' },
-	{ key: 'value', label: measure, num: true },
+	{ key: 'value', label: measure, num: true, unit },
 	{ key: 'station', label: 'Station' },
 	{ key: 'date', label: 'Date' },
 	{ key: 'gear', label: 'Gear' },
@@ -29,8 +30,8 @@ export const views = {
 			{ key: 'diversity', label: 'Biodiversity (1 − D)', num: true }
 		]
 	},
-	longest: { tab: 'Longest fish', columns: fish_columns('Length (cm)') },
-	heaviest: { tab: 'Heaviest fish', columns: fish_columns('Weight (kg)') }
+	longest: { tab: 'Longest fish', columns: fish_columns('Length (cm)', 'cm') },
+	heaviest: { tab: 'Heaviest fish', columns: fish_columns('Weight (kg)', 'kg') }
 };
 
 // Fishers left out of the leaderboard, the prizes and the longest/heaviest tables (DEC-45, e.g. the organisers):

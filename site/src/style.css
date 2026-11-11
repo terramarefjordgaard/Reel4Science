@@ -330,6 +330,7 @@ tr.is-selected { background: var(--sea); }
 	table.cards tbody th, table.cards tr > td:first-child:not(.rank) { order: 1; flex: 1 0 calc(100% - 5.5em - 12px); font-size: 1rem; color: var(--ink); }
 	table.cards td:empty { display: none; }
 	table.cards td.is-key { order: 2; flex: 0 0 5.5em; text-align: right; color: var(--ink); font-size: 1rem; }
+	table.cards td.is-key[data-unit]::after { content: ' ' attr(data-unit); font-size: 0.75rem; color: var(--muted); }
 	table.cards td[data-label]:not(.is-key) { font-size: 0.78rem; color: var(--muted); }
 	table.cards td[data-label]:not(.is-key)::before { content: attr(data-label) ': '; }
 

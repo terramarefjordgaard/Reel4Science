@@ -97,7 +97,7 @@ export function create_community({ store }) {
 				// data-label: the column name, shown before the value when the table becomes cards on phones;
 				// is-key: the value the table is ranked by, set apart on the cards
 				const key = c.key === (view === 'leaderboard' ? (sort === 'conservation' ? 'released' : 'diversity') : 'value');
-				return el(c.key === 'fisher' ? 'th' : 'td', { scope: c.key === 'fisher' ? 'row' : null, class: [c.num ? 'num' : '', key ? 'is-key' : ''].join(' ').trim() || null, 'data-label': c.label }, v === null || v === undefined ? '–' : c.num && typeof v === 'number' ? number.format(v) : String(v));
+				return el(c.key === 'fisher' ? 'th' : 'td', { scope: c.key === 'fisher' ? 'row' : null, class: [c.num ? 'num' : '', key ? 'is-key' : ''].join(' ').trim() || null, 'data-label': c.label, 'data-unit': c.unit }, v === null || v === undefined ? '–' : c.num && typeof v === 'number' ? number.format(v) : String(v));
 			}))));
 			const notes = [scope_text];
 			if (view === 'leaderboard') {
