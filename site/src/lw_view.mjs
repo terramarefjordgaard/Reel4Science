@@ -6,7 +6,7 @@
 import { el, number } from './dom.mjs';
 import { lw_points, fisher_colours, reference_curve } from './lw_data.mjs';
 import { lw_fit } from '../../shared/analytics.mjs';
-import { plotly, base_layout, grid, config } from './plotly.mjs';
+import { plotly, base_layout, grid, config, phone } from './plotly.mjs';
 
 const $ = (id) => document.getElementById(id);
 const neutral = 'rgba(85, 107, 108, 0.45)';
@@ -91,7 +91,7 @@ export function create_lw({ store, cfg }) {
 			const type = obs.log_axes ? 'log' : 'linear';
 			const layout = {
 				...base_layout,
-				height: 380,
+				height: phone() ? 300 : 380,
 				margin: { l: 64, r: 16, t: 8, b: 52 },
 				xaxis: { ...grid, type, title: { text: 'Length (cm)' } },
 				yaxis: { ...grid, type, title: { text: 'Weight (g)' } }

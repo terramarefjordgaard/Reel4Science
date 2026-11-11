@@ -1,5 +1,5 @@
 // Leaderboard section (spec 2.3 LB-01..04 rev, DEC-25, DEC-29/30): prizes inside the table card, one table with three tabs,
-// all species, over the shared period (computed in the browser with the publisher's shared code);
+// all species, over all dates (DEC-44: the page shows it above the period row; computed with the shared code);
 // the leaderboard shows 10 rows until expanded; CSV of the active view, every row.
 import { el, number, download } from './dom.mjs';
 import { views, view_rows } from './community_data.mjs';
@@ -61,7 +61,7 @@ export function create_community({ store }) {
 		const among = `${p.eligible} fisher${p.eligible === 1 ? '' : 's'} with at least ${p.min_fish} fish`;
 		if (!p.winners.length) {
 			winner.textContent = 'No winner yet';
-			value.textContent = p.eligible ? `No release recorded · ${among}` : `No fisher with at least ${p.min_fish} fish in this period`;
+			value.textContent = p.eligible ? `No release recorded · ${among}` : `No fisher with at least ${p.min_fish} fish yet`;
 			return;
 		}
 		winner.textContent = p.winners.join(' & ');
@@ -94,7 +94,10 @@ export function create_community({ store }) {
 					return el('td', { class: 'rank' }, r.medal ? [el('span', { 'aria-hidden': 'true' }, `${r.medal.icon} `), el('span', { class: 'visually-hidden' }, r.medal.text)] : String(r.rank), r.medal ? el('span', { 'aria-hidden': 'true' }, String(r.rank)) : null);
 				}
 				const v = r[c.key];
-				return el(c.key === 'fisher' ? 'th' : 'td', { scope: c.key === 'fisher' ? 'row' : null, class: c.num ? 'num' : null }, v === null || v === undefined ? '–' : c.num && typeof v === 'number' ? number.format(v) : String(v));
+				// data-label: the column name, shown before the value when the table becomes cards on phones;
+				// is-key: the value the table is ranked by, set apart on the cards
+				const key = c.key === (view === 'leaderboard' ? (sort === 'conservation' ? 'released' : 'diversity') : 'value');
+				return el(c.key === 'fisher' ? 'th' : 'td', { scope: c.key === 'fisher' ? 'row' : null, class: [c.num ? 'num' : '', key ? 'is-key' : ''].join(' ').trim() || null, 'data-label': c.label }, v === null || v === undefined ? '–' : c.num && typeof v === 'number' ? number.format(v) : String(v));
 			}))));
 			const notes = [scope_text];
 			if (view === 'leaderboard') {
@@ -112,7 +115,7 @@ export function create_community({ store }) {
 			more.textContent = board.expanded ? 'Show top 10' : `Show all ${rows.length} fishers`;
 			more.setAttribute('aria-expanded', String(Boolean(board.expanded)));
 			$('board-empty').hidden = rows.length > 0;
-			$('board-empty').textContent = 'No fish recorded in this period.';
+			$('board-empty').textContent = 'No fish recorded yet.';
 			$('board-table').hidden = rows.length === 0;
 			$('board-csv').disabled = rows.length === 0;
 			last = { view, period, version, rows };

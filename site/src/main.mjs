@@ -13,6 +13,7 @@ import { create_catch } from './catch_view.mjs';
 import { create_lw } from './lw_view.mjs';
 import { create_poller } from './poller.mjs';
 import { state_labels } from './state.mjs';
+import { latest_trip, activity_text } from './activity.mjs';
 
 /* global __SITE__ */
 const cfg = __SITE__;
@@ -59,6 +60,8 @@ const ui = {
 		$('trips-stale').hidden = !info.stale;
 		$('trips-stale').textContent = info.stale ? `Last known status, source checked ${show_time(info.source_checked_at)}` : '';
 		$('trips-list').replaceChildren(...items.map((text) => Object.assign(document.createElement('li'), { textContent: text })));
+		open_trips = items.length;
+		render_latest();
 	},
 	toast(text) {
 		const el = Object.assign(document.createElement('div'), { className: 'toast', textContent: text });
@@ -68,6 +71,7 @@ const ui = {
 	data(latest) {
 		current = { latest, contract: yaml.load(latest.contract_yaml, { schema: yaml.CORE_SCHEMA }) };
 		render_figures();
+		render_latest();
 		render('data');
 	}
 };
@@ -75,6 +79,7 @@ const ui = {
 const store = create_store();
 let current = null;
 let map = null;
+let open_trips = 0;
 const community = create_community({ store });
 const catches = create_catch({ store });
 const lw = create_lw({ store, cfg });
@@ -106,6 +111,13 @@ function render_figures() {
 	}
 }
 
+// Latest trip (DEC-44): only while no trip is in progress; the time passed is refreshed at every status check
+function render_latest() {
+	const trip = current && !open_trips ? latest_trip(current.latest.tables, current.contract) : null;
+	$('latest').hidden = !trip;
+	$('latest').textContent = trip ? activity_text(trip, Date.now(), cfg.display_timezone) : '';
+}
+
 // Default period (DEC-32): from the first date in the data to today, in the station time zone
 const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: cfg.display_timezone }).format(new Date());
 function set_default_period() {
@@ -128,6 +140,7 @@ function species_menu(select, list, chosen, first_label) {
 function render(changed) {
 	const d = store.describe();
 	$('period-scope').textContent = d;
+	$('period-short').textContent = d;
 	if (!current) {
 		return;
 	}
@@ -150,8 +163,9 @@ function render(changed) {
 			lw.update({ tables, contract, species, obs: st.obs, scope_text: d });
 		}
 	}
-	if (['data', 'period', 'board'].includes(changed)) {
-		community.update({ tables, contract, version: latest.meta.data_version, board: st.board, period: st.period, scope_text: d });
+	// leaderboard and prizes over all dates, above the period row (DEC-44)
+	if (['data', 'board'].includes(changed)) {
+		community.update({ tables: latest.tables, contract, version: latest.meta.data_version, board: st.board, period: { from: null, to: null }, scope_text: 'All dates' });
 	}
 }
 
@@ -176,6 +190,27 @@ document.addEventListener('keydown', (e) => {
 		close_infos(null);
 	}
 });
+// Buttons that open and close a part of the page on phones (DEC-44): menu, rest of the opening, the other six
+// figures, period dates. On a computer these buttons are not shown and every part is always open.
+function opener(button_id, part, labels = null) {
+	const button = $(button_id);
+	const set = (open) => {
+		button.setAttribute('aria-expanded', String(open));
+		part.classList.toggle('is-open', open);
+		if (labels) {
+			button.textContent = open ? labels[1] : labels[0];
+		}
+	};
+	button.addEventListener('click', () => set(button.getAttribute('aria-expanded') !== 'true'));
+	return set;
+}
+const set_menu = opener('menu-toggle', document.querySelector('.top'));
+document.querySelectorAll('#site-nav a').forEach((a) => a.addEventListener('click', () => set_menu(false)));
+document.addEventListener('keydown', (e) => e.key === 'Escape' && set_menu(false));
+opener('intro-more', $('intro'), ['Read more', 'Read less']);
+opener('figures-more', $('figures'), ['More figures', 'Fewer figures']);
+opener('period-toggle', $('period-bar'));
+
 $('map-species').addEventListener('change', (e) => store.set('map', { species: e.target.value || null }));
 $('map-size').addEventListener('change', (e) => store.set('map', { size: e.target.value }));
 $('obs-species').addEventListener('change', (e) => store.set('obs', { species: e.target.value, highlight: [] }));

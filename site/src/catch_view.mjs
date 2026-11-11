@@ -3,7 +3,7 @@
 // station filters; day detail on click; table alternative.
 import { el, fill_select } from './dom.mjs';
 import { catch_timeseries, catch_options, day_detail } from './catch_data.mjs';
-import { plotly, base_layout, grid, config } from './plotly.mjs';
+import { plotly, base_layout, grid, config, phone } from './plotly.mjs';
 
 const $ = (id) => document.getElementById(id);
 
@@ -22,9 +22,10 @@ export function create_catch({ store }) {
 				box.hidden = true;
 			} }, 'Close')),
 			rows.length
-				? el('div', { class: 'table-wrap' }, el('table', {},
+				? el('div', { class: 'table-wrap' }, el('table', { class: 'cards' },
 					el('thead', {}, el('tr', {}, ['Fisher', 'Length (cm)', 'Weight (g)', 'Gear', 'Station', 'Status'].map((h) => el('th', { scope: 'col' }, h)))),
-					el('tbody', {}, rows.map((r) => el('tr', {}, el('td', {}, r.fisher), el('td', { class: 'num' }, r.length_cm ?? '-'), el('td', { class: 'num' }, r.weight_g ?? '-'), el('td', {}, r.gear ?? '-'), el('td', {}, r.station), el('td', {}, r.provisional ? 'Provisional' : ''))))))
+					// data-label: the column name, shown before the value when the table becomes cards on phones
+					el('tbody', {}, rows.map((r) => el('tr', {}, el('td', {}, r.fisher), el('td', { class: 'num is-key', 'data-label': 'Length (cm)' }, r.length_cm ?? '-'), el('td', { class: 'num', 'data-label': 'Weight (g)' }, r.weight_g ?? '-'), el('td', { 'data-label': 'Gear' }, r.gear ?? '-'), el('td', { 'data-label': 'Station' }, r.station), el('td', { 'data-label': 'Status' }, r.provisional ? 'Provisional' : ''))))))
 				: el('p', { class: 'detail-hint' }, 'Fishing day without this species.'));
 	}
 
@@ -46,7 +47,7 @@ export function create_catch({ store }) {
 			$('catch-empty').textContent = 'No fishing days in this period.';
 			$('catch-day').hidden = true;
 			$('catch-table').querySelector('tbody').replaceChildren(...s.days.map((d) => el('tr', {},
-				el('td', {}, d.date), el('td', { class: 'num' }, String(d.count)), el('td', {}, d.fishers.join(', ') || '-'), el('td', {}, d.stations.join(', ') || '-'), el('td', {}, d.provisional ? 'Trip in progress' : ''))));
+				el('td', {}, d.date), el('td', { class: 'num is-key', 'data-label': 'Fish' }, String(d.count)), el('td', { 'data-label': 'Fishers' }, d.fishers.join(', ') || '-'), el('td', { 'data-label': 'Stations' }, d.stations.join(', ') || '-'), el('td', { 'data-label': 'Status' }, d.provisional ? 'Trip in progress' : ''))));
 			const Plotly = await plotly();
 			if (mine !== generation) {
 				return;
@@ -64,7 +65,7 @@ export function create_catch({ store }) {
 			const top = Math.max(0, ...s.days.map((d) => d.count));
 			const layout = {
 				...base_layout,
-				height: 380,
+				height: phone() ? 300 : 380,
 				margin: { l: 44, r: 12, t: 8, b: 40 },
 				showlegend: false,
 				xaxis: { ...grid, type: 'date', tickformat: '%b %Y', nticks: 6, tickangle: 0 },

@@ -1,6 +1,6 @@
 // Control state (spec 2.3 UX-02 rev, DEC-25): the period is the only filter shared by every section after the
 // project figures; each section keeps its own controls. A reset never acts outside its scope.
-//   period - shared row: map, observations, community
+//   period - shared row: map and observations (the leaderboard above it covers all dates, DEC-44)
 //   map    - species, marker size, selected station
 //   obs    - observations: species, local fisher/gear/station filters, LW highlight and axes
 //   board  - community: table tab, ranking, rows shown

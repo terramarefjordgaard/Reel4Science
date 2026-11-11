@@ -22,8 +22,23 @@ function el(tag, attrs = {}, ...children) {
 	return e;
 }
 
+// Touch screens (DEC-44): one finger scrolls the page, two fingers move and zoom the map; a one-finger swipe on the
+// map shows a short hint
+const touch = window.matchMedia('(pointer: coarse)').matches;
+
 export function create_map({ cfg, root, on_select }) {
-	const map = L.map(root.querySelector('#map'), { scrollWheelZoom: false, zoomSnap: 0.5, minZoom: cfg.map.min_zoom || 3, worldCopyJump: true }).setView(cfg.map.center, cfg.map.zoom);
+	const map = L.map(root.querySelector('#map'), { scrollWheelZoom: false, dragging: !touch, zoomSnap: 0.5, minZoom: cfg.map.min_zoom || 3, worldCopyJump: true }).setView(cfg.map.center, cfg.map.zoom);
+	if (touch) {
+		const hint = root.querySelector('#map-hint');
+		let timer = null;
+		root.querySelector('#map').addEventListener('touchmove', (e) => {
+			if (e.touches.length === 1) {
+				hint.hidden = false;
+				clearTimeout(timer);
+				timer = setTimeout(() => (hint.hidden = true), 1500);
+			}
+		}, { passive: true });
+	}
 	const notice = root.querySelector('#map-notice');
 	let tiles_ok = false;
 	// World background in grey under Kartverket, so that zooming out never shows an empty map outside Norway
@@ -55,15 +70,24 @@ export function create_map({ cfg, root, on_select }) {
 	};
 	root.querySelector('#map-reset').addEventListener('click', fit);
 
+	// On phones the detail of a newly chosen station opens over the map (class is-open) until closed
+	let detail_of = null;
+	const close_detail = () => root.querySelector('#station-detail').classList.remove('is-open');
+
 	function render_detail(view, selected, scope_text, species_order) {
 		const box = root.querySelector('#station-detail');
 		const s = [...view.placed, ...view.unplaced].find((x) => x.station === selected);
+		if (selected !== detail_of) {
+			box.classList.toggle('is-open', Boolean(selected));
+			detail_of = selected;
+		}
+		const close = el('button', { type: 'button', class: 'detail-close', id: 'detail-close', 'aria-label': 'Close station detail', onclick: close_detail }, '✕');
 		if (!selected) {
 			box.replaceChildren(el('p', { class: 'detail-hint' }, 'Select a station on the map or in the station list.'));
 			return;
 		}
 		if (!s) {
-			box.replaceChildren(el('p', { class: 'eyebrow' }, 'Selected station'), el('h3', {}, selected), el('p', { class: 'detail-hint' }, `No fishing trips here: ${scope_text}.`));
+			box.replaceChildren(close, el('p', { class: 'eyebrow' }, 'Selected station'), el('h3', {}, selected), el('p', { class: 'detail-hint' }, `No fishing trips here: ${scope_text}.`));
 			return;
 		}
 		const two = new Intl.NumberFormat('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -71,6 +95,7 @@ export function create_map({ cfg, root, on_select }) {
 		const fig = (value, label, fmt = number) => el('div', { class: 'fig' }, el('span', { class: 'fig-n' }, value === null ? 'n/a' : fmt.format(value)), el('span', { class: 'fig-l' }, label));
 		const parts = composition_parts(s.composition, species_order, cfg.palette.species);
 		box.replaceChildren(...[
+			close,
 			el('p', { class: 'eyebrow' }, 'Selected station'),
 			el('h3', {}, s.station),
 			el('p', { class: 'detail-sub' }, [s.area, s.lat === undefined ? 'Position not available' : null].filter(Boolean).join(' · ') || ' '),
@@ -90,13 +115,14 @@ export function create_map({ cfg, root, on_select }) {
 		const rows = [...view.placed, ...view.unplaced].sort((a, b) => (a.station < b.station ? -1 : 1));
 		root.querySelector('#station-count').textContent = String(rows.length);
 		root.querySelector('#station-rows').replaceChildren(...rows.map((s) => el('tr', { class: s.station === selected ? 'is-selected' : '' },
+			// data-label: the column name, shown before the value when the table becomes cards on phones
 			el('th', { scope: 'row' }, el('button', { type: 'button', class: 'link-button', onclick: () => on_select(s.station) }, s.station)),
-			el('td', {}, s.area || '-'),
-			el('td', { class: 'num' }, number.format(s.catches)),
-			el('td', { class: 'num' }, number.format(s.species)),
-			el('td', { class: 'num' }, number.format(s.fishing_events)),
-			el('td', { class: 'num' }, s.fishing_hours === null ? 'n/a' : number.format(s.fishing_hours)),
-			el('td', {}, [s.open ? 'Trip in progress' : '', s.lat === undefined ? 'Position not available' : ''].filter(Boolean).join(' · ') || 'Sampled'))));
+			el('td', { 'data-label': 'Area' }, s.area || '-'),
+			el('td', { class: 'num is-key', 'data-label': 'Fish' }, number.format(s.catches)),
+			el('td', { class: 'num', 'data-label': 'Species' }, number.format(s.species)),
+			el('td', { class: 'num', 'data-label': 'Fishing events' }, number.format(s.fishing_events)),
+			el('td', { class: 'num', 'data-label': 'Fishing hours' }, s.fishing_hours === null ? 'n/a' : number.format(s.fishing_hours)),
+			el('td', { 'data-label': 'Status' }, [s.open ? 'Trip in progress' : '', s.lat === undefined ? 'Position not available' : ''].filter(Boolean).join(' · ') || 'Sampled'))));
 	}
 
 	return {

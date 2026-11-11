@@ -15,14 +15,14 @@ toast:
 display_timezone: Europe/Oslo
 
 # Editorial texts, compiled at build time (paths under site/). content: opening and sub-blocks of sections;
-# sections: page order and menu (UX-01 rev, DEC-29)
+# sections: page order and menu (UX-01 rev, DEC-29, DEC-44)
 content:
   intro: content/intro.md
   map: content/map.md
   species: content/species.md
 sections:
-  - { id: observations, menu: Observations, file: content/observations.md }
   - { id: leaderboard, menu: Leaderboard, file: content/leaderboard.md }
+  - { id: observations, menu: Observations, file: content/observations.md }
   - { id: about, menu: About, file: content/about.md }
   - { id: contacts, menu: Contacts, file: content/contacts.md }
 # Contacts section, links in the order shown: name and address (https:// or mailto:); web links open in a new
