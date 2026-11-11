@@ -40,6 +40,11 @@ export function load_site_config(path) {
 	if (c?.contacts !== undefined && !(Array.isArray(c.contacts) && c.contacts.every(contact_ok))) {
 		problems.push('contacts (label and https:// or mailto: url)');
 	}
+	// leaderboard.excluded_fishers: optional; names left out of every ranking and prize
+	const excluded = c?.leaderboard?.excluded_fishers;
+	if (excluded !== undefined && !(Array.isArray(excluded) && excluded.every((x) => typeof x === 'string' && x.trim()))) {
+		problems.push('leaderboard.excluded_fishers (list of names)');
+	}
 	if (!/^https:\/\/\S+$/.test(c?.footer?.logo_link || '')) {
 		problems.push('footer.logo_link (https:// address)');
 	}

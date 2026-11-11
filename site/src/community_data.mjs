@@ -33,6 +33,17 @@ export const views = {
 	heaviest: { tab: 'Heaviest fish', columns: fish_columns('Weight (kg)') }
 };
 
+// Fishers left out of the leaderboard, the prizes and the longest/heaviest tables (DEC-45, e.g. the organisers):
+// their catch rows are removed before ranking; names matched ignoring case and spaces at the ends.
+// Project figures, map and charts keep every row.
+export function without_fishers(tables, names) {
+	const out = new Set((names || []).map((n) => n.trim().toLowerCase()));
+	if (!out.size) {
+		return tables;
+	}
+	return { ...tables, catchdata: tables.catchdata.filter((c) => !out.has(String(c.Fisherman ?? '').trim().toLowerCase())) };
+}
+
 // Leaderboard orders (DEC-32): the two prizes
 export const sorts = { biodiversity: 'Biodiversity prize', conservation: 'Conservation prize' };
 const pct = new Intl.NumberFormat('en-GB', { maximumFractionDigits: 1 });

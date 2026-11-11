@@ -25,6 +25,10 @@ sections:
   - { id: observations, menu: Observations, file: content/observations.md }
   - { id: about, menu: About, file: content/about.md }
   - { id: contacts, menu: Contacts, file: content/contacts.md }
+# Fishers left out of the leaderboard, the prizes and the longest/heaviest tables, written as in the app
+# (case does not matter). Their fish still count in the project figures, the map and the charts.
+leaderboard:
+  excluded_fishers: [terramare_fjordgaard]
 # Contacts section, links in the order shown: name and address (https:// or mailto:); web links open in a new
 # tab. Add a line per link, for example:
 #   - { label: Project website, url: 'https://…' }

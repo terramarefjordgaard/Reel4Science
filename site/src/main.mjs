@@ -7,6 +7,7 @@ import { create_app } from './app.mjs';
 import { create_store } from './store.mjs';
 import { summarize, project_stats, filter_period } from '../../shared/metrics.mjs';
 import { species_by_count } from './catch_data.mjs';
+import { without_fishers } from './community_data.mjs';
 import { create_map } from './map.mjs';
 import { create_community } from './community_view.mjs';
 import { create_catch } from './catch_view.mjs';
@@ -163,9 +164,10 @@ function render(changed) {
 			lw.update({ tables, contract, species, obs: st.obs, scope_text: d });
 		}
 	}
-	// leaderboard and prizes over all dates, above the period row (DEC-44)
+	// leaderboard and prizes over all dates, above the period row (DEC-44), without the excluded fishers (DEC-45)
 	if (['data', 'board'].includes(changed)) {
-		community.update({ tables: latest.tables, contract, version: latest.meta.data_version, board: st.board, period: { from: null, to: null }, scope_text: 'All dates' });
+		const ranked = without_fishers(latest.tables, cfg.leaderboard && cfg.leaderboard.excluded_fishers);
+		community.update({ tables: ranked, contract, version: latest.meta.data_version, board: st.board, period: { from: null, to: null }, scope_text: 'All dates' });
 	}
 }
 
